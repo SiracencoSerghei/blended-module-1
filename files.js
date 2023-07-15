@@ -4,36 +4,31 @@ const chalk = require("chalk");
 const dataValidator = require("./helpers/dataValidator");
 const checkExtension = require("./helpers/checkExtension");
 
-const createFile = async (filename, content) => {
-  const file = {
-    filename,
-    content,
-  };
-
-  const { error } = dataValidator(file);
-
+const createFile = async (req, res, next) => {
+  try {
+    
+  const { error } = dataValidator(req.body);
+ const {filename, content} = req.body
   if (error) {
-    console.log(
-      chalk.red(`Please specify ${error.details[0].path[0]} parameter `)
-    );
-    return;
+    res.status(400).json({message: `Please specify ${error.details[0].path[0]} parameter `})
+    return 
   }
 
   const { result, extension } = checkExtension(filename);
   if (!result) {
-    console.log(
-      chalk.red(`this application doesn't support ${extension} extension`)
-    );
+    res.status(400).json({message: `this application doesn't support ${extension} extension`})
     return;
   }
 
   const filePath = path.join(__dirname, "files", filename);
-  try {
     await fs.writeFile(filePath, content, "utf-8");
-    console.log(chalk.green("File was created successfully"));
+    res.status(201).json({message: "File was created successfully"})
+
   } catch (error) {
-    console.log(error);
+    console.log(error)
+    res.sendStatus(500)
   }
+ 
 };
 
 const getFiles = async () => {
