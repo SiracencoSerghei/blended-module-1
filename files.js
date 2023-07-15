@@ -22,7 +22,7 @@ const createFile = async (filename, content) => {
   const { result, extension } = checkExtension(filename);
   if (!result) {
     console.log(
-      chalk.red(`this application doesn't support ${extension} extention`)
+      chalk.red(`this application doesn't support ${extension} extension`)
     );
     return;
   }
