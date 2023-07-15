@@ -36,4 +36,35 @@ const createFile = async (filename, content) => {
   }
 };
 
-module.exports = { createFile };
+const getFiles = async () => {
+  
+ const directory = await fs.readdir(path.join(__dirname, "files") )
+ if(directory.length === 0) {
+  console.log(chalk.red('Directory is EMPTY'))
+  return
+ }
+ console.log('directory', directory)
+}
+
+const getInfo = async (filename) => {
+  const directory = await fs.readdir(path.join(__dirname, "files") )
+
+const isFile = directory.find(item => item === filename)
+ if(  !isFile ) {
+  console.log(chalk.red(`${filename} not exist in directory`))
+  return
+ } 
+const fileValues = await fs.readFile(path.join(__dirname, "files", filename), "utf-8")
+
+const extension = path.extname(filename);
+const nameFile = path.basename(filename, extension);
+
+const fileObj = {
+  name: nameFile,
+  extension: extension.slice(1),
+  content: fileValues,
+}
+console.log('fileObj', fileObj)
+}
+
+module.exports = { createFile, getFiles, getInfo };
